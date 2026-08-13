@@ -79,7 +79,7 @@ def register_view(request):
                 StudentProfile.objects.create(
                     user=user,
                     department=form.cleaned_data.get('department', 'CSE'),
-                    year=int(form.cleaned_data.get('year') or 1),
+                    year=int(form.cleaned_data.get('year', 1)),
                     skills=json.dumps(skills_list),
                     interests=form.cleaned_data.get('interests', '')
                 )
@@ -498,7 +498,7 @@ def profile_view(request):
                 except StudentProfile.DoesNotExist:
                     p = StudentProfile.objects.create(user=user)
                 p.department = form.cleaned_data.get('department', p.department)
-                p.year = int(form.cleaned_data.get('year') or p.year)
+                p.year = int(form.cleaned_data.get('year', p.year))
                 skills_str = form.cleaned_data.get('skills', '')
                 p.skills = json.dumps([s.strip() for s in skills_str.split(',') if s.strip()])
                 p.interests = form.cleaned_data.get('interests', p.interests)

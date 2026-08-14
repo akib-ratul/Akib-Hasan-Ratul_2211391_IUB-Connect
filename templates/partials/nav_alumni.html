@@ -8,8 +8,11 @@
   <i data-lucide="message-circle" style="width:18px;height:18px"></i> Messages
   {% if unread_messages_count %}<span class="badge-count">{{ unread_messages_count }}</span>{% endif %}
 </a>
-<a href="{% url 'alumni_jobs' %}" class="nav-link {% if request.resolver_match.url_name == 'alumni_jobs' %}active{% endif %}">
-  <i data-lucide="briefcase" style="width:18px;height:18px"></i> Post Jobs
+<a href="{% url 'alumni_jobs' %}" class="nav-link {% if request.resolver_match.url_name == 'alumni_jobs' or request.resolver_match.url_name == 'alumni_job_applicants' %}active{% endif %}">
+  <i data-lucide="briefcase" style="width:18px;height:18px"></i> My Jobs
+</a>
+<a href="{% url 'ai_chat' %}" class="nav-link {% if request.resolver_match.url_name == 'ai_chat' %}active{% endif %}">
+  <i data-lucide="bot" style="width:18px;height:18px"></i> AI Assistant
 </a>
 <a href="{% url 'alumni_resources' %}" class="nav-link {% if request.resolver_match.url_name == 'alumni_resources' %}active{% endif %}">
   <i data-lucide="book-open" style="width:18px;height:18px"></i> Resources

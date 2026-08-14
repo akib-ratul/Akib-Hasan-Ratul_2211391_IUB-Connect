@@ -17,6 +17,9 @@
 <a href="{% url 'student_career' %}" class="nav-link {% if request.resolver_match.url_name == 'student_career' %}active{% endif %}">
   <i data-lucide="lightbulb" style="width:18px;height:18px"></i> Career Guide
 </a>
+<a href="{% url 'ai_chat' %}" class="nav-link {% if request.resolver_match.url_name == 'ai_chat' %}active{% endif %}">
+  <i data-lucide="bot" style="width:18px;height:18px"></i> AI Assistant
+</a>
 <a href="{% url 'notifications' %}" class="nav-link {% if request.resolver_match.url_name == 'notifications' %}active{% endif %}">
   <i data-lucide="bell" style="width:18px;height:18px"></i> Notifications
   {% if unread_count %}<span class="badge-count">{{ unread_count }}</span>{% endif %}

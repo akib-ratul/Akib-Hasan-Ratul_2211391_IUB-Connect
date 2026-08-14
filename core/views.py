@@ -1,5 +1,7 @@
+import os
 import json
 import re
+from google import genai
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
@@ -660,6 +662,51 @@ def get_messages_api(request, user_id):
             'is_mine': m.sender_id == request.user.id,
         } for m in msgs
     ]})
+
+
+# ==================== AI CHATBOT ====================
+@login_required
+def ai_chat_view(request):
+    """Renders the AI chat interface."""
+    return render(request, 'shared/ai_chat.html')
+
+@login_required
+def ai_chat_api(request):
+    """Handles messages sent to the AI Chatbot."""
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            user_message = data.get('message', '').strip()
+            
+            if not user_message:
+                return JsonResponse({'error': 'Message cannot be empty.'}, status=400)
+
+            api_key = os.environ.get('GEMINI_API_KEY')
+            if not api_key:
+                return JsonResponse({'error': 'AI Assistant is currently unavailable (missing API key).'}, status=503)
+
+            client = genai.Client(api_key=api_key)
+            
+            system_prompt = (
+                "You are the IUB Connect AI Assistant. "
+                "You are designed to help students and alumni of Independent University, Bangladesh (IUB) "
+                "with academic queries, career advice, and general university questions. "
+                "Be polite, concise, and helpful. "
+            )
+            
+            response = client.models.generate_content(
+                model='gemini-2.0-flash',
+                config={'system_instruction': system_prompt},
+                contents=user_message,
+            )
+            
+            return JsonResponse({'message': response.text})
+            
+        except Exception as e:
+            print(f"AI Chat Error: {str(e)}")
+            return JsonResponse({'error': 'An error occurred while generating a response.'}, status=500)
+            
+    return JsonResponse({'error': 'Invalid request method.'}, status=405)
 
 
 # ==================== ADMIN VIEWS ====================

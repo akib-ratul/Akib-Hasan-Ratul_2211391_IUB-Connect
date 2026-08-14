@@ -38,6 +38,8 @@ urlpatterns = [
     path('chat/', views.chat_view, name='chat'),
     path('chat/send/', views.send_message, name='send_message'),
     path('api/messages/<int:user_id>/', views.get_messages_api, name='get_messages_api'),
+    path('ai-chat/', views.ai_chat_view, name='ai_chat'),
+    path('api/ai-chat/', views.ai_chat_api, name='ai_chat_api'),
 
     # Admin
     path('admin-panel/', views.admin_dashboard, name='admin_dashboard'),

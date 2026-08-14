@@ -695,7 +695,7 @@ def ai_chat_api(request):
             )
             
             response = client.models.generate_content(
-                model='gemini-2.0-flash',
+                model='gemini-1.5-flash',
                 config={'system_instruction': system_prompt},
                 contents=user_message,
             )

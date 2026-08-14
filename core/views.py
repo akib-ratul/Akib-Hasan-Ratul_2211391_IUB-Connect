@@ -1,7 +1,6 @@
 import os
 import json
 import re
-from google import genai
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
@@ -681,11 +680,12 @@ def ai_chat_api(request):
             if not user_message:
                 return JsonResponse({'error': 'Message cannot be empty.'}, status=400)
 
-            api_key = os.environ.get('GEMINI_API_KEY')
+            api_key = os.environ.get('GROQ_API_KEY')
             if not api_key:
                 return JsonResponse({'error': 'AI Assistant is currently unavailable (missing API key).'}, status=503)
 
-            client = genai.Client(api_key=api_key)
+            from openai import OpenAI
+            client = OpenAI(api_key=api_key, base_url="https://api.groq.com/openai/v1")
             
             system_prompt = (
                 "You are the IUB Connect AI Assistant. "
@@ -694,13 +694,15 @@ def ai_chat_api(request):
                 "Be polite, concise, and helpful. "
             )
             
-            response = client.models.generate_content(
-                model='gemini-1.5-flash',
-                config={'system_instruction': system_prompt},
-                contents=user_message,
+            response = client.chat.completions.create(
+                model='llama-3.3-70b-versatile',
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_message}
+                ]
             )
             
-            return JsonResponse({'message': response.text})
+            return JsonResponse({'message': response.choices[0].message.content})
             
         except Exception as e:
             print(f"AI Chat Error: {str(e)}")
